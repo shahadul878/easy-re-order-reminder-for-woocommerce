@@ -1,0 +1,151 @@
+/**
+ * Easy Reorder Reminder Frontend Styles
+ */
+
+.easyrere-thankyou-wrapper {
+    margin: 40px 0;
+    font-family: inherit;
+}
+
+.easyrere-reminder-card {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    max-width: 600px;
+    margin: 0 auto;
+    /* Center it if appropriate, or remove if left-aligned is preferred */
+}
+
+.easyrere-reminder-header {
+    margin-bottom: 20px;
+}
+
+.easyrere-reminder-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.easyrere-reminder-desc {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.easyrere-form-group {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.easyrere-select-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.easyrere-select {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    appearance: none;
+    /* Native dropdown styling removal for custom icon if desired, but keeping simple for now */
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.easyrere-select:focus {
+    border-color: #7f54b3;
+    /* Purple theme */
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(127, 84, 179, 0.1);
+}
+
+.easyrere-btn {
+    padding: 10px 24px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #fff;
+    background-color: #7f54b3;
+    /* Purple theme */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.easyrere-btn:hover {
+    background-color: #694496;
+}
+
+.easyrere-btn:active {
+    transform: translateY(1px);
+}
+
+.easyrere-btn:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.easyrere-message {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.easyrere-success {
+    color: #00a32a;
+    background: #e7f6e9;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+.easyrere-error {
+    color: #d63638;
+    background: #fbeaea;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+/* Response Loader (Optional) */
+.easyrere-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: easyrere-spin 1s ease-in-out infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+@keyframes easyrere-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 480px) {
+    .easyrere-form-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .easyrere-btn {
+        width: 100%;
+    }
+}

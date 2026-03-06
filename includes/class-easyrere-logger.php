@@ -9,24 +9,23 @@
 defined('ABSPATH') || exit;
 
 /**
- * WRR_Logger Class
+ * EASYRERE_Logger Class
  */
-class WRR_Logger {
+class EASYRERE_Logger {
 
 	/**
 	 * Instance
 	 *
-	 * @var WRR_Logger
+	 * @var EASYRERE_Logger
 	 */
 	private static $instance = null;
 
 	/**
 	 * Get instance
 	 *
-	 * @return WRR_Logger
+	 * @return EASYRERE_Logger
 	 */
-	public static function instance()
-    {
+	public static function instance() {
 		if (is_null(self::$instance)) {
 			self::$instance = new self();
 		}
@@ -36,8 +35,7 @@ class WRR_Logger {
 	/**
 	 * Constructor
 	 */
-	private function __construct()
-    {
+	private function __construct() {
 		// Table creation is handled by plugin activation hook
 		// Also ensure table exists when logger is first used
 		add_action('init', array( __CLASS__, 'maybe_create_table' ), 5);
@@ -46,10 +44,9 @@ class WRR_Logger {
 	/**
 	 * Maybe create table if it doesn't exist
 	 */
-	public static function maybe_create_table()
-    {
+	public static function maybe_create_table() {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'wrr_logs';
+		$table_name = $wpdb->prefix . 'easyrere_logs';
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check is necessary and doesn't benefit from caching
 		if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table_name)) !== $table_name) {
@@ -60,11 +57,10 @@ class WRR_Logger {
 	/**
 	 * Create log table
 	 */
-	public static function create_log_table()
-    {
+	public static function create_log_table() {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . 'wrr_logs';
+		$table_name = $wpdb->prefix . 'easyrere_logs';
 
 		$charset_collate = $wpdb->get_charset_collate();
 
@@ -95,11 +91,10 @@ class WRR_Logger {
 	 * @param string $status Status (pending, sent, failed).
 	 * @return int|false Log ID or false on failure
 	 */
-	public static function log($order_id, $product_id, $email, $status = 'pending')
-    {
+	public static function log($order_id, $product_id, $email, $status = 'pending') {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . 'wrr_logs';
+		$table_name = $wpdb->prefix . 'easyrere_logs';
 
 		// Ensure table exists
 		self::create_log_table();
@@ -130,12 +125,11 @@ class WRR_Logger {
 	 * @param array $args Query arguments.
 	 * @return array
 	 */
-	public static function get_logs($args = array())
-    {
+	public static function get_logs($args = array()) {
 		global $wpdb;
 
 		// Table name constant - safe, never user input
-		$table_suffix = 'wrr_logs';
+		$table_suffix = 'easyrere_logs';
 		$table_name = $wpdb->prefix . $table_suffix;
 
 		// Ensure table exists before querying
@@ -160,23 +154,37 @@ class WRR_Logger {
 		$status = ! empty($args['status']) ? sanitize_text_field($args['status']) : '';
 
 		// Build query using prepare() for all user input
+		// Use whitelist approach for ORDER BY clause to avoid interpolation
 		if (! empty($status)) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
-			$query = $wpdb->prepare(
-				"SELECT * FROM `{$wpdb->prefix}wrr_logs` WHERE status = %s ORDER BY sent_at %s LIMIT %d OFFSET %d",
-				$status,
-				$order,
-				$limit,
-				$offset
-			);
+			if ('ASC' === $order) {
+				$query = $wpdb->prepare(
+					"SELECT * FROM `{$wpdb->prefix}easyrere_logs` WHERE status = %s ORDER BY sent_at ASC LIMIT %d OFFSET %d",
+					$status,
+					$limit,
+					$offset
+				);
+			} else {
+				$query = $wpdb->prepare(
+					"SELECT * FROM `{$wpdb->prefix}easyrere_logs` WHERE status = %s ORDER BY sent_at DESC LIMIT %d OFFSET %d",
+					$status,
+					$limit,
+					$offset
+				);
+			}
 		} else {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
-			$query = $wpdb->prepare(
-				"SELECT * FROM `{$wpdb->prefix}wrr_logs` WHERE 1=1 ORDER BY sent_at %s LIMIT %d OFFSET %d",
-				$order,
-				$limit,
-				$offset
-			);
+			if ('ASC' === $order) {
+				$query = $wpdb->prepare(
+					"SELECT * FROM `{$wpdb->prefix}easyrere_logs` WHERE 1=1 ORDER BY sent_at ASC LIMIT %d OFFSET %d",
+					$limit,
+					$offset
+				);
+			} else {
+				$query = $wpdb->prepare(
+					"SELECT * FROM `{$wpdb->prefix}easyrere_logs` WHERE 1=1 ORDER BY sent_at DESC LIMIT %d OFFSET %d",
+					$limit,
+					$offset
+				);
+			}
 		}
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above, log queries require direct access and real-time data (no caching)
@@ -189,12 +197,11 @@ class WRR_Logger {
 	 * @param string $status Status filter.
 	 * @return int
 	 */
-	public static function get_log_count($status = '')
-    {
+	public static function get_log_count($status = '') {
 		global $wpdb;
 
 		// Table name constant - safe, never user input
-		$table_suffix = 'wrr_logs';
+		$table_suffix = 'easyrere_logs';
 		$table_name = $wpdb->prefix . $table_suffix;
 
 		// Ensure table exists before querying
@@ -210,13 +217,13 @@ class WRR_Logger {
 		if (! empty($status)) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$query = $wpdb->prepare(
-				"SELECT COUNT(*) FROM `{$wpdb->prefix}wrr_logs` WHERE status = %s",
+				"SELECT COUNT(*) FROM `{$wpdb->prefix}easyrere_logs` WHERE status = %s",
 				$status
 			);
 		} else {
 			// No user input in this query, table name is safe (from $wpdb->prefix)
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
-			$query = "SELECT COUNT(*) FROM `{$wpdb->prefix}wrr_logs` WHERE 1=1";
+			$query = "SELECT COUNT(*) FROM `{$wpdb->prefix}easyrere_logs` WHERE 1=1";
 		}
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above (or contains no user input), log count queries require direct access and real-time data (no caching)
@@ -230,11 +237,10 @@ class WRR_Logger {
 	 * @param string $status New status.
 	 * @return bool
 	 */
-	public static function update_status($log_id, $status)
-    {
+	public static function update_status($log_id, $status) {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . 'wrr_logs';
+		$table_name = $wpdb->prefix . 'easyrere_logs';
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Log status updates require direct database writes and cannot be cached
 		$result = $wpdb->update(

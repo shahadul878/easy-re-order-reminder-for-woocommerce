@@ -9,21 +9,21 @@
 defined('ABSPATH') || exit;
 
 /**
- * WRR_Cron Class
+ * EASYRERE_Cron Class
  */
-class WRR_Cron {
+class EASYRERE_Cron {
 
 	/**
 	 * Instance
 	 *
-	 * @var WRR_Cron
+	 * @var EASYRERE_Cron
 	 */
 	private static $instance = null;
 
 	/**
 	 * Get instance
 	 *
-	 * @return WRR_Cron
+	 * @return EASYRERE_Cron
 	 */
 	public static function instance()
     {
@@ -38,7 +38,7 @@ class WRR_Cron {
 	 */
 	private function __construct()
     {
-		add_action('wrr_daily_cron', array( $this, 'process_reminders' ));
+		add_action('easyrere_daily_cron', array( $this, 'process_reminders' ));
 	}
 
 	/**
@@ -46,8 +46,8 @@ class WRR_Cron {
 	 */
 	public static function activate()
     {
-		if (! wp_next_scheduled('wrr_daily_cron')) {
-			wp_schedule_event(time(), 'daily', 'wrr_daily_cron');
+		if (! wp_next_scheduled('easyrere_daily_cron')) {
+			wp_schedule_event(time(), 'daily', 'easyrere_daily_cron');
 		}
 	}
 
@@ -56,9 +56,9 @@ class WRR_Cron {
 	 */
 	public static function deactivate()
     {
-		$timestamp = wp_next_scheduled('wrr_daily_cron');
+		$timestamp = wp_next_scheduled('easyrere_daily_cron');
 		if ($timestamp) {
-			wp_unschedule_event($timestamp, 'wrr_daily_cron');
+			wp_unschedule_event($timestamp, 'easyrere_daily_cron');
 		}
 	}
 
@@ -68,11 +68,11 @@ class WRR_Cron {
 	public function process_reminders()
     {
 		// Check if reminders are enabled
-		if ('yes' !== get_option('wrr_enable_reminder', 'yes')) {
+		if ('yes' !== get_option('easyrere_enable_reminder', 'yes')) {
 			return;
 		}
 
-		$global_days = absint(get_option('wrr_reminder_days', 30));
+		$global_days = absint(get_option('easyrere_reminder_days', 30));
 		$timestamp   = strtotime("-{$global_days} days");
 		$date_from   = gmdate('Y-m-d H:i:s', $timestamp);
 
@@ -114,13 +114,13 @@ class WRR_Cron {
 					continue;
 				}
 
-				// Check if reminder already sent for this order-product combination
-				if ($this->is_reminder_sent($order_id, $product_id)) {
+				// Check if reminder already sent for this order-product combination (HPOS compatible)
+				if ($this->is_reminder_sent($order, $product_id)) {
 					continue;
 				}
 
-				// Get reminder days - check customer preference first, then product, then global
-				$customer_days = get_post_meta($order_id, '_wrr_customer_reminder_days', true);
+				// Get reminder days - check customer preference first, then product, then global (HPOS compatible)
+				$customer_days = $order->get_meta('_easyrere_customer_reminder_days');
 				if ($customer_days && $customer_days > 0) {
 					// Use customer's selected preference
 					$reminder_days = absint($customer_days);
@@ -139,8 +139,8 @@ class WRR_Cron {
 
 				// Check if it's time to send reminder
 				if (time() >= $reminder_time) {
-					WRR_Email::send_reorder_email($order, $product_id);
-					$this->mark_reminder_sent($order_id, $product_id);
+					EASYRERE_Email::send_reorder_email($order, $product_id);
+					$this->mark_reminder_sent($order, $product_id);
 				}
 			}
 		}
@@ -154,7 +154,7 @@ class WRR_Cron {
 	 */
 	private function is_unsubscribed($email)
     {
-		$unsubscribed = get_option('wrr_unsubscribed_emails', array());
+		$unsubscribed = get_option('easyrere_unsubscribed_emails', array());
 		return in_array($email, $unsubscribed, true);
 	}
 
@@ -166,7 +166,7 @@ class WRR_Cron {
 	 */
 	private function is_reminder_enabled($product_id)
     {
-		$product_enabled = get_post_meta($product_id, '_wrr_enable', true);
+		$product_enabled = get_post_meta($product_id, '_easyrere_enable', true);
 		if ('no' === $product_enabled) {
 			return false;
 		}
@@ -183,32 +183,33 @@ class WRR_Cron {
 	 */
 	private function get_reminder_days($product_id, $global_days)
     {
-		$product_days = get_post_meta($product_id, '_wrr_reminder_days', true);
+		$product_days = get_post_meta($product_id, '_easyrere_reminder_days', true);
 		return $product_days ? absint($product_days) : $global_days;
 	}
 
 	/**
-	 * Check if reminder already sent
+	 * Check if reminder already sent (HPOS compatible)
 	 *
-	 * @param int $order_id Order ID.
-	 * @param int $product_id Product ID.
+	 * @param WC_Order $order Order object.
+	 * @param int     $product_id Product ID.
 	 * @return bool
 	 */
-	private function is_reminder_sent($order_id, $product_id)
+	private function is_reminder_sent($order, $product_id)
     {
-		$sent = get_post_meta($order_id, '_wrr_sent_' . $product_id, true);
+		$sent = $order->get_meta('_easyrere_sent_' . $product_id);
 		return 'yes' === $sent;
 	}
 
 	/**
-	 * Mark reminder as sent
+	 * Mark reminder as sent (HPOS compatible)
 	 *
-	 * @param int $order_id Order ID.
-	 * @param int $product_id Product ID.
+	 * @param WC_Order $order Order object.
+	 * @param int     $product_id Product ID.
 	 */
-	private function mark_reminder_sent($order_id, $product_id)
+	private function mark_reminder_sent($order, $product_id)
     {
-		update_post_meta($order_id, '_wrr_sent_' . $product_id, 'yes');
-		update_post_meta($order_id, '_wrr_sent_date_' . $product_id, current_time('mysql'));
+		$order->update_meta_data('_easyrere_sent_' . $product_id, 'yes');
+		$order->update_meta_data('_easyrere_sent_date_' . $product_id, current_time('mysql'));
+		$order->save();
 	}
 }

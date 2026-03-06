@@ -1,14 +1,14 @@
-# Copyright (C) 2024 H M Shahadul Islam
+# Copyright (C) 2024 Codereyes
 # This file is distributed under the same license as the Easy Re-Order Reminder for WooCommerce plugin.
 msgid ""
 msgstr ""
 "Project-Id-Version: Easy Re-Order Reminder for WooCommerce 1.0.0\n"
-"Report-Msgid-Bugs-To: https://github.com/shahadul878/easy-reorder-reminder\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/easy-re-order-reminder-for-woocommerce\n"
 "POT-Creation-Date: 2024-01-01 00:00:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2024-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-
+"X-Domain: easy-re-order-reminder-for-woocommerce\n"

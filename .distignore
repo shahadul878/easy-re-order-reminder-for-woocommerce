@@ -1,0 +1,55 @@
+# WordPress.org distribution ignore file
+# Files and directories to exclude from the distribution archive
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# Development files
+*.md
+!readme.txt
+phpcs.xml
+.distignore
+.editorconfig
+.eslintrc
+.prettierrc
+
+# Documentation
+README.md
+WORDPRESS-ORG-SUBMISSION.md
+CHANGELOG.md
+CONTRIBUTING.md
+
+# Development dependencies
+node_modules/
+package.json
+package-lock.json
+composer.json
+composer.lock
+yarn.lock
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Build files
+*.zip
+*.tar.gz
+*.log
+
+# Testing
+tests/
+phpunit.xml
+.phpunit.result.cache
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+

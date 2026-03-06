@@ -9,24 +9,23 @@
 defined('ABSPATH') || exit;
 
 /**
- * WRR_Plugin Class
+ * EASYRERE_Plugin Class
  */
-class WRR_Plugin {
+class EASYRERE_Plugin {
 
 	/**
 	 * Plugin instance
 	 *
-	 * @var WRR_Plugin
+	 * @var EASYRERE_Plugin
 	 */
 	private static $instance = null;
 
 	/**
 	 * Get plugin instance
 	 *
-	 * @return WRR_Plugin
+	 * @return EASYRERE_Plugin
 	 */
-	public static function instance()
-    {
+	public static function instance() {
 		if (is_null(self::$instance)) {
 			self::$instance = new self();
 		}
@@ -36,8 +35,7 @@ class WRR_Plugin {
 	/**
 	 * Constructor
 	 */
-	private function __construct()
-    {
+	private function __construct() {
 		$this->includes();
 		$this->init_hooks();
 	}
@@ -45,23 +43,21 @@ class WRR_Plugin {
 	/**
 	 * Include required files
 	 */
-	private function includes()
-    {
-		require_once WRR_PATH . 'includes/class-wrr-cron.php';
-		require_once WRR_PATH . 'includes/class-wrr-order.php';
+	private function includes() {
+		require_once EASYRERE_PATH . 'includes/class-easyrere-cron.php';
+		require_once EASYRERE_PATH . 'includes/class-easyrere-order.php';
 		// Email class will be loaded after WooCommerce is available
-		require_once WRR_PATH . 'includes/class-wrr-settings.php';
-		require_once WRR_PATH . 'includes/class-wrr-logger.php';
+		require_once EASYRERE_PATH . 'includes/class-easyrere-settings.php';
+		require_once EASYRERE_PATH . 'includes/class-easyrere-logger.php';
 	}
 
 	/**
 	 * Initialize hooks
 	 */
-	private function init_hooks()
-    {
-		register_activation_hook(WRR_FILE, array( 'WRR_Cron', 'activate' ));
-		register_activation_hook(WRR_FILE, array( 'WRR_Logger', 'create_log_table' ));
-		register_deactivation_hook(WRR_FILE, array( 'WRR_Cron', 'deactivate' ));
+	private function init_hooks() {
+		register_activation_hook(EASYRERE_FILE, array( 'EASYRERE_Cron', 'activate' ));
+		register_activation_hook(EASYRERE_FILE, array( 'EASYRERE_Logger', 'create_log_table' ));
+		register_deactivation_hook(EASYRERE_FILE, array( 'EASYRERE_Cron', 'deactivate' ));
 
 		// Load text domain
 		add_action('init', array( $this, 'load_textdomain' ));
@@ -76,26 +72,23 @@ class WRR_Plugin {
 
 	/**
 	 * Load plugin textdomain
-	 * Note: For WordPress.org plugins, translations are loaded automatically since WordPress 4.6.
-	 * This method is kept for backward compatibility but does not call load_plugin_textdomain()
-	 * as it's discouraged for WordPress.org plugins.
 	 */
-	public function load_textdomain()
-    {
-		// WordPress.org automatically loads translations, so load_plugin_textdomain() is not needed.
-		// Translations are loaded automatically from the /languages directory.
-		// This method is kept for backward compatibility but remains empty.
+	public function load_textdomain() {
+		load_plugin_textdomain(
+			'easy-re-order-reminder-for-woocommerce',
+			false,
+			dirname(EASYRERE_BASENAME) . '/languages'
+		);
 	}
 
 	/**
 	 * Initialize plugin components
 	 */
-	public function init_components()
-    {
-		WRR_Cron::instance();
-		WRR_Order::instance();
-		WRR_Settings::instance();
-		WRR_Logger::instance();
+	public function init_components() {
+		EASYRERE_Cron::instance();
+		EASYRERE_Order::instance();
+		EASYRERE_Settings::instance();
+		EASYRERE_Logger::instance();
 	}
 
 	/**
@@ -105,26 +98,25 @@ class WRR_Plugin {
 	 * @param array $emails Email classes.
 	 * @return array
 	 */
-	public function add_email_class($emails)
-    {
+	public function add_email_class($emails) {
 		// Ensure WC_Email exists - if not, we can't extend it
 		if (! class_exists('WC_Email')) {
 			return $emails;
 		}
 
 		// Load email class if not already loaded
-		if (! class_exists('WRR_Email')) {
-			require_once WRR_PATH . 'includes/class-wrr-email.php';
+		if (! class_exists('EASYRERE_Email')) {
+			require_once EASYRERE_PATH . 'includes/class-easyrere-email.php';
 		}
 
 		// If class still doesn't exist, something went wrong
-		if (! class_exists('WRR_Email')) {
+		if (! class_exists('EASYRERE_Email')) {
 			return $emails;
 		}
 
 		try {
 			// Get email instance
-			$email_instance = WRR_Email::instance();
+			$email_instance = EASYRERE_Email::instance();
 
 			if (! $email_instance || ! is_a($email_instance, 'WC_Email')) {
 				if (defined('WP_DEBUG') && WP_DEBUG) {
