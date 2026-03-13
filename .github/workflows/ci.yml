@@ -1,0 +1,62 @@
+name: Plugin CI
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+
+jobs:
+  plugin-check:
+    name: WordPress Plugin Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Plugin Check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          # Use the current repository root as the plugin directory.
+          build-dir: './'
+          # Run against latest stable WordPress.
+          wp-version: latest
+          # Keep experimental checks enabled for broader coverage.
+          include-experimental: true
+          # Fail the job on any reported problems.
+          strict: true
+
+  phpcs:
+    name: PHPCS (WPCS)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer, phpcs
+
+      - name: Install WordPress Coding Standards (WPCS)
+        run: |
+          composer global require \
+            wp-coding-standards/wpcs:^3.0 \
+            dealerdirect/phpcodesniffer-composer-installer:^1.0
+
+      - name: Show installed sniffs (debug)
+        run: phpcs -i
+
+      - name: Run PHPCS with WPCS
+        run: |
+          phpcs \
+            --standard=WordPress \
+            --extensions=php,php8 \
+            --ignore=vendor,node_modules \
+            .
+
