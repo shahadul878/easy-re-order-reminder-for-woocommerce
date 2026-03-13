@@ -1,14 +1,15 @@
 <?php
-
 /**
- * Logs Page View
+ * Logs Page View.
  *
- * @package WRR
+ * Displays the Re-Order Reminder logs table in the admin.
+ *
+ * @package Easy_Reorder_Reminder_For_WooCommerce
  */
 
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables are local scope
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables are local scope.
 $logs          = EASYRERE_Logger::get_logs();
 $sent_count    = EASYRERE_Logger::get_log_count( 'sent' );
 $pending_count = EASYRERE_Logger::get_log_count( 'pending' );

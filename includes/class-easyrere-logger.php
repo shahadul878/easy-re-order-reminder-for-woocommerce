@@ -1,9 +1,10 @@
 <?php
-
 /**
- * Logger Class
+ * Logger Class.
  *
- * @package WRR
+ * Handles logging of reorder reminder events.
+ *
+ * @package Easy_Reorder_Reminder_For_WooCommerce
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -33,16 +34,16 @@ class EASYRERE_Logger {
 	}
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	private function __construct() {
-		// Table creation is handled by plugin activation hook
-		// Also ensure table exists when logger is first used
+		// Table creation is handled by plugin activation hook.
+		// Also ensure table exists when logger is first used.
 		add_action( 'init', array( __CLASS__, 'maybe_create_table' ), 5 );
 	}
 
 	/**
-	 * Maybe create table if it doesn't exist
+	 * Maybe create table if it doesn't exist.
 	 */
 	public static function maybe_create_table() {
 		global $wpdb;
@@ -55,7 +56,7 @@ class EASYRERE_Logger {
 	}
 
 	/**
-	 * Create log table
+	 * Create log table.
 	 */
 	public static function create_log_table() {
 		global $wpdb;
@@ -83,7 +84,7 @@ class EASYRERE_Logger {
 	}
 
 	/**
-	 * Log reminder
+	 * Log reminder.
 	 *
 	 * @param int    $order_id Order ID.
 	 * @param int    $product_id Product ID.
@@ -96,7 +97,7 @@ class EASYRERE_Logger {
 
 		$table_name = $wpdb->prefix . 'easyrere_logs';
 
-		// Ensure table exists
+		// Ensure table exists.
 		self::create_log_table();
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Logging requires direct database writes and cannot be cached
@@ -120,7 +121,7 @@ class EASYRERE_Logger {
 	}
 
 	/**
-	 * Get logs
+	 * Get logs.
 	 *
 	 * @param array $args Query arguments.
 	 * @return array
@@ -128,12 +129,12 @@ class EASYRERE_Logger {
 	public static function get_logs( $args = array() ) {
 		global $wpdb;
 
-		// Table name constant - safe, never user input
+		// Table name constant - safe, never user input.
 		$table_suffix = 'easyrere_logs';
 		$table_name   = $wpdb->prefix . $table_suffix;
 
-		// Ensure table exists before querying
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check is necessary and doesn't benefit from caching
+		// Ensure table exists before querying.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check is necessary and does not benefit from caching.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
 			self::create_log_table();
 		}
@@ -147,14 +148,14 @@ class EASYRERE_Logger {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		// Sanitize and validate inputs
+		// Sanitize and validate inputs.
 		$limit  = absint( $args['limit'] );
 		$offset = absint( $args['offset'] );
 		$order  = in_array( strtoupper( $args['order'] ), array( 'ASC', 'DESC' ), true ) ? strtoupper( $args['order'] ) : 'DESC';
 		$status = ! empty( $args['status'] ) ? sanitize_text_field( $args['status'] ) : '';
 
-		// Build query using prepare() for all user input
-		// Use whitelist approach for ORDER BY clause to avoid interpolation
+		// Build query using prepare() for all user input.
+		// Use whitelist approach for ORDER BY clause to avoid interpolation.
 		if ( ! empty( $status ) ) {
 			if ( 'ASC' === $order ) {
 				$query = $wpdb->prepare(
@@ -185,12 +186,12 @@ class EASYRERE_Logger {
 			);
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above, log queries require direct access and real-time data (no caching)
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above, log queries require direct access and real-time data (no caching).
 		return $wpdb->get_results( $query, ARRAY_A );
 	}
 
 	/**
-	 * Get log count
+	 * Get log count.
 	 *
 	 * @param string $status Status filter.
 	 * @return int
@@ -198,38 +199,38 @@ class EASYRERE_Logger {
 	public static function get_log_count( $status = '' ) {
 		global $wpdb;
 
-		// Table name constant - safe, never user input
+		// Table name constant - safe, never user input.
 		$table_suffix = 'easyrere_logs';
 		$table_name   = $wpdb->prefix . $table_suffix;
 
-		// Ensure table exists before querying
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check is necessary and doesn't benefit from caching
+		// Ensure table exists before querying.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check is necessary and does not benefit from caching.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
 			self::create_log_table();
 		}
 
-		// Sanitize status
+		// Sanitize status.
 		$status = ! empty( $status ) ? sanitize_text_field( $status ) : '';
 
-		// Build query using prepare() for user input
+		// Build query using prepare() for user input.
 		if ( ! empty( $status ) ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter.
 			$query = $wpdb->prepare(
 				"SELECT COUNT(*) FROM `{$wpdb->prefix}easyrere_logs` WHERE status = %s",
 				$status
 			);
 		} else {
-			// No user input in this query, table name is safe (from $wpdb->prefix)
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+			// No user input in this query, table name is safe (from $wpdb->prefix).
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter.
 			$query = "SELECT COUNT(*) FROM `{$wpdb->prefix}easyrere_logs` WHERE 1=1";
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above (or contains no user input), log count queries require direct access and real-time data (no caching)
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above (or contains no user input), log count queries require direct access and real-time data (no caching).
 		return (int) $wpdb->get_var( $query );
 	}
 
 	/**
-	 * Update log status
+	 * Update log status.
 	 *
 	 * @param int    $log_id Log ID.
 	 * @param string $status New status.
@@ -240,7 +241,7 @@ class EASYRERE_Logger {
 
 		$table_name = $wpdb->prefix . 'easyrere_logs';
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Log status updates require direct database writes and cannot be cached
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Log status updates require direct database writes and cannot be cached.
 		$result = $wpdb->update(
 			$table_name,
 			array( 'status' => sanitize_text_field( $status ) ),
