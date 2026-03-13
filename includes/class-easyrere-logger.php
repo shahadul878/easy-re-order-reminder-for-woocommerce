@@ -6,7 +6,7 @@
  * @package WRR
  */
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * EASYRERE_Logger Class
@@ -26,7 +26,7 @@ class EASYRERE_Logger {
 	 * @return EASYRERE_Logger
 	 */
 	public static function instance() {
-		if (is_null(self::$instance)) {
+		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
 		return self::$instance;
@@ -38,7 +38,7 @@ class EASYRERE_Logger {
 	private function __construct() {
 		// Table creation is handled by plugin activation hook
 		// Also ensure table exists when logger is first used
-		add_action('init', array( __CLASS__, 'maybe_create_table' ), 5);
+		add_action( 'init', array( __CLASS__, 'maybe_create_table' ), 5 );
 	}
 
 	/**
@@ -49,7 +49,7 @@ class EASYRERE_Logger {
 		$table_name = $wpdb->prefix . 'easyrere_logs';
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check is necessary and doesn't benefit from caching
-		if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table_name)) !== $table_name) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
 			self::create_log_table();
 		}
 	}
@@ -79,7 +79,7 @@ class EASYRERE_Logger {
 		) $charset_collate;";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		dbDelta($sql);
+		dbDelta( $sql );
 	}
 
 	/**
@@ -91,7 +91,7 @@ class EASYRERE_Logger {
 	 * @param string $status Status (pending, sent, failed).
 	 * @return int|false Log ID or false on failure
 	 */
-	public static function log($order_id, $product_id, $email, $status = 'pending') {
+	public static function log( $order_id, $product_id, $email, $status = 'pending' ) {
 		global $wpdb;
 
 		$table_name = $wpdb->prefix . 'easyrere_logs';
@@ -103,16 +103,16 @@ class EASYRERE_Logger {
 		$result = $wpdb->insert(
 			$table_name,
 			array(
-				'order_id'   => absint($order_id),
-				'product_id' => absint($product_id),
-				'email'      => sanitize_email($email),
-				'status'     => sanitize_text_field($status),
-				'sent_at'    => current_time('mysql'),
+				'order_id'   => absint( $order_id ),
+				'product_id' => absint( $product_id ),
+				'email'      => sanitize_email( $email ),
+				'status'     => sanitize_text_field( $status ),
+				'sent_at'    => current_time( 'mysql' ),
 			),
 			array( '%d', '%d', '%s', '%s', '%s' )
 		);
 
-		if ($result) {
+		if ( $result ) {
 			return $wpdb->insert_id;
 		}
 
@@ -125,16 +125,16 @@ class EASYRERE_Logger {
 	 * @param array $args Query arguments.
 	 * @return array
 	 */
-	public static function get_logs($args = array()) {
+	public static function get_logs( $args = array() ) {
 		global $wpdb;
 
 		// Table name constant - safe, never user input
 		$table_suffix = 'easyrere_logs';
-		$table_name = $wpdb->prefix . $table_suffix;
+		$table_name   = $wpdb->prefix . $table_suffix;
 
 		// Ensure table exists before querying
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check is necessary and doesn't benefit from caching
-		if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table_name)) !== $table_name) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
 			self::create_log_table();
 		}
 
@@ -145,18 +145,18 @@ class EASYRERE_Logger {
 			'order'  => 'DESC',
 		);
 
-		$args = wp_parse_args($args, $defaults);
+		$args = wp_parse_args( $args, $defaults );
 
 		// Sanitize and validate inputs
-		$limit  = absint($args['limit']);
-		$offset = absint($args['offset']);
-		$order  = in_array(strtoupper($args['order']), array('ASC', 'DESC'), true) ? strtoupper($args['order']) : 'DESC';
-		$status = ! empty($args['status']) ? sanitize_text_field($args['status']) : '';
+		$limit  = absint( $args['limit'] );
+		$offset = absint( $args['offset'] );
+		$order  = in_array( strtoupper( $args['order'] ), array( 'ASC', 'DESC' ), true ) ? strtoupper( $args['order'] ) : 'DESC';
+		$status = ! empty( $args['status'] ) ? sanitize_text_field( $args['status'] ) : '';
 
 		// Build query using prepare() for all user input
 		// Use whitelist approach for ORDER BY clause to avoid interpolation
-		if (! empty($status)) {
-			if ('ASC' === $order) {
+		if ( ! empty( $status ) ) {
+			if ( 'ASC' === $order ) {
 				$query = $wpdb->prepare(
 					"SELECT * FROM `{$wpdb->prefix}easyrere_logs` WHERE status = %s ORDER BY sent_at ASC LIMIT %d OFFSET %d",
 					$status,
@@ -171,24 +171,22 @@ class EASYRERE_Logger {
 					$offset
 				);
 			}
-		} else {
-			if ('ASC' === $order) {
+		} elseif ( 'ASC' === $order ) {
 				$query = $wpdb->prepare(
 					"SELECT * FROM `{$wpdb->prefix}easyrere_logs` WHERE 1=1 ORDER BY sent_at ASC LIMIT %d OFFSET %d",
 					$limit,
 					$offset
 				);
-			} else {
-				$query = $wpdb->prepare(
-					"SELECT * FROM `{$wpdb->prefix}easyrere_logs` WHERE 1=1 ORDER BY sent_at DESC LIMIT %d OFFSET %d",
-					$limit,
-					$offset
-				);
-			}
+		} else {
+			$query = $wpdb->prepare(
+				"SELECT * FROM `{$wpdb->prefix}easyrere_logs` WHERE 1=1 ORDER BY sent_at DESC LIMIT %d OFFSET %d",
+				$limit,
+				$offset
+			);
 		}
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above, log queries require direct access and real-time data (no caching)
-		return $wpdb->get_results($query, ARRAY_A);
+		return $wpdb->get_results( $query, ARRAY_A );
 	}
 
 	/**
@@ -197,24 +195,24 @@ class EASYRERE_Logger {
 	 * @param string $status Status filter.
 	 * @return int
 	 */
-	public static function get_log_count($status = '') {
+	public static function get_log_count( $status = '' ) {
 		global $wpdb;
 
 		// Table name constant - safe, never user input
 		$table_suffix = 'easyrere_logs';
-		$table_name = $wpdb->prefix . $table_suffix;
+		$table_name   = $wpdb->prefix . $table_suffix;
 
 		// Ensure table exists before querying
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table existence check is necessary and doesn't benefit from caching
-		if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table_name)) !== $table_name) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
 			self::create_log_table();
 		}
 
 		// Sanitize status
-		$status = ! empty($status) ? sanitize_text_field($status) : '';
+		$status = ! empty( $status ) ? sanitize_text_field( $status ) : '';
 
 		// Build query using prepare() for user input
-		if (! empty($status)) {
+		if ( ! empty( $status ) ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$query = $wpdb->prepare(
 				"SELECT COUNT(*) FROM `{$wpdb->prefix}easyrere_logs` WHERE status = %s",
@@ -227,7 +225,7 @@ class EASYRERE_Logger {
 		}
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above (or contains no user input), log count queries require direct access and real-time data (no caching)
-		return (int) $wpdb->get_var($query);
+		return (int) $wpdb->get_var( $query );
 	}
 
 	/**
@@ -237,7 +235,7 @@ class EASYRERE_Logger {
 	 * @param string $status New status.
 	 * @return bool
 	 */
-	public static function update_status($log_id, $status) {
+	public static function update_status( $log_id, $status ) {
 		global $wpdb;
 
 		$table_name = $wpdb->prefix . 'easyrere_logs';
@@ -245,8 +243,8 @@ class EASYRERE_Logger {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Log status updates require direct database writes and cannot be cached
 		$result = $wpdb->update(
 			$table_name,
-			array( 'status' => sanitize_text_field($status) ),
-			array( 'id' => absint($log_id) ),
+			array( 'status' => sanitize_text_field( $status ) ),
+			array( 'id' => absint( $log_id ) ),
 			array( '%s' ),
 			array( '%d' )
 		);
