@@ -15,7 +15,7 @@
 	</description>
 
 	<!-- What to scan -->
-	<file>woo-reorder-reminder.php</file>
+	<file>easy-reorder-reminder.php</file>
 	<file>includes/</file>
 	<file>templates/</file>
 

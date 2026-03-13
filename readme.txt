@@ -2,9 +2,9 @@
 Contributors: codereyes,shahadul878
 Tags: woocommerce, email, reminders, reorder, customer retention
 Requires at least: 5.8
-Tested up to: 6.7
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 5.0
@@ -139,6 +139,15 @@ Yes! You can set custom reminder days for each product individually, or use the 
 
 == Changelog ==
 
+= 1.0.1 =
+* Security: Proper nonce sanitization for all AJAX and form handlers
+* Compatibility: Full HPOS (High-Performance Order Storage) support for WooCommerce
+* Compatibility: Improved WooCommerce dependency check for network activation
+* Added: uninstall.php for proper cleanup on plugin removal
+* Added: load_plugin_textdomain for translation support
+* Fixed: Order edit links in logs page for HPOS compatibility
+* Updated: Plugin URI and text domain consistency
+
 = 1.0.0 =
 * Initial release
 * Automatic email reminders based on configurable days
@@ -152,6 +161,9 @@ Yes! You can set custom reminder days for each product individually, or use the 
 * Full WooCommerce integration
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Security and compatibility update. Includes nonce sanitization fixes, HPOS support, and WordPress.org compatibility improvements.
 
 = 1.0.0 =
 Initial release of Easy Re-Order Reminder for WooCommerce. Activate the plugin and configure your settings to start sending reminder emails to customers.

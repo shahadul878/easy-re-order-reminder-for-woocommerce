@@ -1,0 +1,35 @@
+ADDITIONAL INFORMATION FOR PLUGIN REVIEWER
+Easy Re-Order Reminder for WooCommerce v1.0.1
+============================================
+
+OWNERSHIP
+---------
+[Choose one and complete before replying:]
+- Email updated to @codereyes.com domain in WordPress.org profile
+- DNS TXT record added at codereyes.com: wordpressorg-codereyes-verification
+- Transfer requested to username: _______________
+
+TECHNICAL FIXES (v1.0.1)
+------------------------
+- Nonce sanitization: All wp_verify_nonce/check_ajax_referer now use sanitize_text_field(wp_unslash()) before verification
+- HPOS: Order meta uses $order->get_meta() and $order->update_meta_data() instead of get_post_meta
+- WooCommerce check: Uses is_plugin_active() for network activation support
+- Requires Plugins: woocommerce (in plugin header)
+- Uninstall: uninstall.php removes options and custom table
+
+FILES CHANGED
+-------------
+- easy-reorder-reminder.php: WooCommerce check, Plugin URI
+- includes/class-easyrere-settings.php: Nonce sanitization (resend email AJAX)
+- includes/class-easyrere-settings-page.php: Nonce sanitization (test email AJAX)
+- includes/class-easyrere-order.php: HPOS-compatible order meta
+- includes/class-easyrere-cron.php: HPOS-compatible order meta
+- includes/views/logs-page.php: OrderUtil::get_order_admin_edit_url() for HPOS
+- templates/thankyou-reminder-selector.php: $order->get_meta() for HPOS
+
+TESTING
+-------
+- Activate with WooCommerce 8.x, HPOS enabled
+- Complete an order, verify thank you page reminder selector
+- Check WooCommerce > Re-Order Reminder > Logs
+- Test email: WooCommerce > Settings > Re-Order Reminder
