@@ -17,6 +17,11 @@ delete_option( 'easyrere_reminder_days' );
 delete_option( 'easyrere_unsubscribed_emails' );
 
 // Drop custom log table.
-$table_name = $wpdb->prefix . 'easyrere_logs';
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.DB.SchemaChange.ChangeDetected -- On uninstall we intentionally remove the plugin's custom log table.
-$wpdb->query( "DROP TABLE IF EXISTS {$table_name}" );
+$easyrere_logs_table_name = $wpdb->prefix . 'easyrere_logs';
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,PluginCheck.DB.SchemaChange.ChangeDetected -- On uninstall we intentionally remove the plugin's custom log table.
+$wpdb->query(
+	$wpdb->prepare(
+		'DROP TABLE IF EXISTS %s',
+		$easyrere_logs_table_name
+	)
+);

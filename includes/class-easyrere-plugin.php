@@ -59,26 +59,12 @@ class EASYRERE_Plugin {
 		register_activation_hook( EASYRERE_FILE, array( 'EASYRERE_Logger', 'create_log_table' ) );
 		register_deactivation_hook( EASYRERE_FILE, array( 'EASYRERE_Cron', 'deactivate' ) );
 
-		// Load text domain
-		add_action( 'init', array( $this, 'load_textdomain' ) );
-
 		// Initialize components
 		add_action( 'init', array( $this, 'init_components' ) );
 
 		// Register email filter early - hook it directly so it's available when WooCommerce initializes emails
 		// The filter will load the class when it's called
 		add_filter( 'woocommerce_email_classes', array( $this, 'add_email_class' ), 20 );
-	}
-
-	/**
-	 * Load plugin textdomain
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain(
-			'easy-re-order-reminder-for-woocommerce',
-			false,
-			dirname( EASYRERE_BASENAME ) . '/languages'
-		);
 	}
 
 	/**
