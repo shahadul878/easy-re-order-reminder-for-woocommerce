@@ -18,7 +18,7 @@ delete_option( 'easyrere_unsubscribed_emails' );
 
 // Drop custom log table.
 $easyrere_logs_table_name = $wpdb->prefix . 'easyrere_logs';
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,PluginCheck.DB.SchemaChange.ChangeDetected -- On uninstall we intentionally remove the plugin's custom log table.
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange -- On uninstall we intentionally remove the plugin's custom log table.
 $wpdb->query(
 	$wpdb->prepare(
 		'DROP TABLE IF EXISTS %s',

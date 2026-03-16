@@ -5,6 +5,7 @@
 .git/
 .gitignore
 .gitattributes
+.github/
 
 # Development files
 *.md
