@@ -7,6 +7,9 @@ on:
       - '.wordpress-org/**'
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   deploy-assets:
     name: Deploy Assets to WordPress.org SVN
@@ -14,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install SVN
         run: |

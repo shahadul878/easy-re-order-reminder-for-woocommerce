@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   deploy:
     name: Deploy Plugin + Assets to WordPress.org SVN
@@ -14,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -105,7 +108,7 @@ jobs:
 
       - name: Checkout WordPress.org SVN
         run: |
-          svn checkout https://plugins.svn.wordpress.org/easy-php-settings/ /tmp/svn \
+          svn checkout ${{ secrets.PLUGIN_URL }} /tmp/svn \
             --username ${{ secrets.WPORG_USERNAME }} \
             --password ${{ secrets.WPORG_PASSWORD }} \
             --depth immediates \
@@ -219,14 +222,14 @@ jobs:
           echo "✅ Tag ${VERSION} created"
 
       - name: Upload release artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: plugin-zip
           path: easy-php-settings.zip
           retention-days: 30
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: easy-php-settings.zip
           body: |

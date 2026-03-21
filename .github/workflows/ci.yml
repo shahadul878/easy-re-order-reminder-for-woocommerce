@@ -7,6 +7,10 @@ on:
       - main
   pull_request:
 
+# Node.js 24 default on GitHub-hosted runners (see GitHub Actions changelog).
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   plugin-check:
     name: WordPress Plugin Check
@@ -14,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Run Plugin Check
         uses: wordpress/plugin-check-action@v1
@@ -34,7 +38,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -58,6 +62,6 @@ jobs:
           phpcs \
             --standard=WordPress \
             --extensions=php,php8 \
-            --ignore=vendor,node_modules \
+            --ignore=vendor,node_modules,.wordpress-org,.github \
             .
 
