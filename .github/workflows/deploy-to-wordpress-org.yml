@@ -147,6 +147,7 @@ jobs:
           find /tmp/svn/trunk -mindepth 1 -not -path '*/.svn*' -delete 2>/dev/null || true
 
           rsync -av --exclude-from=.distignore \
+            --exclude='.wordpress-org/' \
             ${{ github.workspace }}/ /tmp/svn/trunk/
 
           cd /tmp/svn
