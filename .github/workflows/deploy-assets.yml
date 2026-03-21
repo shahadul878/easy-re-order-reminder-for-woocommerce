@@ -40,7 +40,7 @@ jobs:
 
       - name: Checkout WordPress.org SVN assets
         run: |
-          svn checkout https://plugins.svn.wordpress.org/easy-php-settings/ /tmp/svn \
+          svn checkout ${{ secrets.PLUGIN_URL }} /tmp/svn \
             --username ${{ secrets.WPORG_USERNAME }} \
             --password ${{ secrets.WPORG_PASSWORD }} \
             --depth immediates \
