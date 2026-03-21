@@ -68,7 +68,7 @@ Customers can unsubscribe from reminders by clicking the unsubscribe link in any
 
 ## Support
 
-For support, feature requests, or bug reports, please visit the [GitHub repository](https://github.com/shahadul878/easy-reorder-reminder).
+For support, feature requests, or bug reports, please visit the [GitHub repository](https://github.com/codereyes-com/easy-re-order-reminder-for-woocommerce).
 
 ## Changelog
 

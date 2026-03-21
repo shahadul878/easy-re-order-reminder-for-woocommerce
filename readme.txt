@@ -183,7 +183,7 @@ Initial release of Easy Re-Order Reminder for WooCommerce. Activate the plugin a
 == Support ==
 
 For support, feature requests, and bug reports, please visit:
-https://github.com/shahadul878/easy-reorder-reminder
+https://github.com/codereyes-com/easy-re-order-reminder-for-woocommerce
 
 == Credits ==
 
