@@ -4,7 +4,7 @@ Tags: woocommerce, email, reminders, reorder, customer retention
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 5.0
@@ -139,6 +139,9 @@ Yes! You can set custom reminder days for each product individually, or use the 
 
 == Changelog ==
 
+= 1.0.3 =
+* Added: WordPress.org plugin directory assets (banner and icon images) under `.wordpress-org` for the official plugin listing.
+
 = 1.0.2 =
 * Maintenance: Version bump for WordPress.org release, keeping 1.0.1 security and HPOS compatibility fixes.
 
@@ -164,6 +167,9 @@ Yes! You can set custom reminder days for each product individually, or use the 
 * Full WooCommerce integration
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+Adds WordPress.org listing assets (banners/icons). No changes to plugin runtime behavior.
 
 = 1.0.2 =
 Maintenance release. No functional changes; updates the version for the latest tested WordPress/WooCommerce environment while preserving 1.0.1 security and compatibility fixes.

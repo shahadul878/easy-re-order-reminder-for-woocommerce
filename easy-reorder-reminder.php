@@ -4,7 +4,7 @@
  * Plugin Name: Easy Re-Order Reminder for WooCommerce
  * Plugin URI: https://github.com/shahadul878/easy-re-order-reminder-for-woocommerce
  * Description: Automatically remind customers to reorder products after a defined time period.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Codereyes
  * Author URI: https://codereyes.com
  * Text Domain: easy-re-order-reminder-for-woocommerce
@@ -21,7 +21,7 @@
 defined('ABSPATH') || exit;
 
 // Define plugin constants
-define('EASYRERE_VERSION', '1.0.2');
+define('EASYRERE_VERSION', '1.0.3');
 define('EASYRERE_FILE', __FILE__);
 define('EASYRERE_PATH', plugin_dir_path(__FILE__));
 define('EASYRERE_URL', plugin_dir_url(__FILE__));

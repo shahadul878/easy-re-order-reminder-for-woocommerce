@@ -72,6 +72,9 @@ For support, feature requests, or bug reports, please visit the [GitHub reposito
 
 ## Changelog
 
+### 1.0.3
+- Added WordPress.org plugin directory assets (banner and icon images) in `.wordpress-org`.
+
 ### 1.0.2
 - Maintenance release for WordPress.org distribution.
 - Keeps all security and HPOS compatibility fixes from `1.0.1`.

@@ -1,5 +1,5 @@
 ADDITIONAL INFORMATION FOR PLUGIN REVIEWER
-Easy Re-Order Reminder for WooCommerce v1.0.2
+Easy Re-Order Reminder for WooCommerce v1.0.3
 ============================================
 
 OWNERSHIP
@@ -8,6 +8,10 @@ OWNERSHIP
 - Email updated to @codereyes.com domain in WordPress.org profile
 - DNS TXT record added at codereyes.com: wordpressorg-codereyes-verification
 - Transfer requested to username: _______________
+
+TECHNICAL NOTES (v1.0.3)
+------------------------
+- WordPress.org plugin directory assets added under `.wordpress-org` (banner and icon images). No runtime code changes.
 
 TECHNICAL NOTES (v1.0.2)
 ------------------------
