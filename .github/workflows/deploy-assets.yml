@@ -50,6 +50,11 @@ jobs:
             --no-auth-cache \
             --non-interactive
 
+          echo "SVN root info:"
+          svn info /tmp/svn
+          echo "SVN target path:"
+          echo "- assets: /tmp/svn/assets"
+
           svn update --set-depth infinity /tmp/svn/assets \
             --username ${{ secrets.WPORG_USERNAME }} \
             --password ${{ secrets.WPORG_PASSWORD }} \

@@ -115,6 +115,13 @@ jobs:
             --no-auth-cache \
             --non-interactive
 
+          echo "SVN root info:"
+          svn info /tmp/svn
+          echo "SVN target paths:"
+          echo "- trunk: /tmp/svn/trunk"
+          echo "- assets: /tmp/svn/assets"
+          echo "- tag: /tmp/svn/tags/${{ steps.get_version.outputs.version }}"
+
           svn update --set-depth infinity /tmp/svn/trunk \
             --username ${{ secrets.WPORG_USERNAME }} \
             --password ${{ secrets.WPORG_PASSWORD }} \
