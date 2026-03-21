@@ -72,13 +72,28 @@ For support, feature requests, or bug reports, please visit the [GitHub reposito
 
 ## Changelog
 
+### 1.0.2
+- Maintenance release for WordPress.org distribution.
+- Keeps all security and HPOS compatibility fixes from `1.0.1`.
+
+### 1.0.1
+- Security: Added proper nonce sanitization for AJAX and form handlers.
+- Compatibility: Added full HPOS (High-Performance Order Storage) support.
+- Compatibility: Improved WooCommerce dependency checks for network activation.
+- Added: `uninstall.php` for proper data cleanup on plugin removal.
+- Added: `load_plugin_textdomain()` for translation support.
+- Fixed: Updated order edit links in logs page for HPOS compatibility.
+- Updated: Plugin URI and text domain consistency.
+
 ### 1.0.0
-- Initial release
-- Basic reminder functionality
-- Product-level controls
-- Email templates
-- Logging system
-- Unsubscribe functionality
+- Initial release.
+- Automatic email reminders based on configurable days.
+- Product-level reminder controls.
+- Customer reminder day selection on the thank-you page.
+- HTML email templates with reorder CTA.
+- Unsubscribe functionality.
+- Reminder logging system.
+- Global settings page and test email functionality.
 
 ## License
 
