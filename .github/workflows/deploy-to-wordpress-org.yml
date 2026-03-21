@@ -84,11 +84,11 @@ jobs:
       - name: Update plugin version
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
-          sed -i "s/Version:     [0-9.]*/Version:     ${VERSION}/" class-easy-php-settings.php
+          sed -i "s/^\( \* Version: \).*/\1${VERSION}/" easy-reorder-reminder.php
 
       - name: Create deployment package
         run: |
-          PLUGIN_SLUG="easy-php-settings"
+          PLUGIN_SLUG="easy-re-order-reminder-for-woocommerce"
 
           mkdir -p /tmp/${PLUGIN_SLUG}
           rsync -av --exclude-from=.distignore \
@@ -225,13 +225,13 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: plugin-zip
-          path: easy-php-settings.zip
+          path: easy-re-order-reminder-for-woocommerce.zip
           retention-days: 30
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: easy-php-settings.zip
+          files: easy-re-order-reminder-for-woocommerce.zip
           body: |
             ## Version ${{ steps.get_version.outputs.version }}
 
